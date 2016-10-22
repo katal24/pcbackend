@@ -4,7 +4,7 @@
   "description": "PC BACKEND",
   "main": "index.js",
   "scripts": {
-    "start": "nodejs router.js"
+    "start": "node router.js"
   },
   "author": "dawid",
   "license": "BSD-2-Clause",

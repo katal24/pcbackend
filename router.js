@@ -10,6 +10,6 @@ var ewe = {
   wiek: 55
 }
 // respond with "hello world" when a GET request is made to the homepage
-app.get('/:id' function(req, res) {
+app.get('/ewe', function(req, res) {
   res.json(ewe);
 });
