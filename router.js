@@ -19,6 +19,42 @@ app.listen(2000, function() {
 });
 
 
+app.get('/user/login/:login/:password', function(req, res) {
+    var login = req.params.login;
+    var password = req.params.password;
+
+    const requestUser = {
+      login: login,
+      password: password
+    };
+
+    var findUser = db.find(requestUser, function(err, responseUser){
+      if (err) throw err;
+      res.send(responseUser[0]);
+    });
+});
+
+app.get('/user/create/:name/:login/:password', function(req, res) {
+  var name = req.params.name;
+    var login = req.params.login;
+    var password = req.params.password;
+
+    const requestUser = {
+      login: login,
+      password: password
+    };
+
+    db.save({
+        name: name,
+        login: login,
+        password: password
+    }, 'User', function(err, user) {
+        res.send(user);
+    });
+
+});
+
+
 app.get('/user/:id', function(req, res) {
     var id = req.params.id;
 
@@ -96,9 +132,44 @@ app.get('/vectors/:ownerId', function(req, res) {
     ].join(' ');
     db.query(query, function(err, vectors) {
         if (err) throw err;
+        vectors.forEach(vector => {
+          vector.values = JSON.parse("[" + vector.values + "]");
+        })
         res.send(vectors);
     });
 });
+
+
+// app.get('/matrices/:ownerId', function(req, res) {
+//     var ownerId = req.params.ownerId;
+//     var query = [
+//         "MATCH (u)-[r:HAS_M]->(m) WHERE id(u)=" + ownerId + "",
+//         "RETURN m",
+//         "ORDER BY m.name"
+//     ].join(' ');
+//     db.query(query, function(err, matrices) {
+//         if (err) throw err;
+//         matrices.forEach(matrix => {
+//           matrix.values = oneDimToTwo(matrix.values, matrix.dimension2);
+//         });
+//         res.send(matrices);
+//     });
+// });
+//
+// function oneDimToTwo(array, dim2){
+//   console.log(dim2);
+//   console.log(array.length);
+//   array = JSON.parse("[" + array + "]")
+//   var matrix = [];
+//   var i, j, temp;
+//   for(i=0, j=array.length; i<j; i+=dim2){
+//     temp = array.slice(i, i+dim2);
+//     console.log(temp);
+//     matrix.push(temp);
+//   }
+//   console.log(matrix);
+//   return matrix;
+// }
 
 
 app.post('/vector', function(req, res) {
